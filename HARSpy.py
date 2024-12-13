@@ -223,3 +223,53 @@ for ax,lab in zip(axList[:-1], coeff_labels):
     ax.set(title=lab);
     
 plt.tight_layout()
+
+
+
+
+#Random Forest Integration
+
+from sklearn.ensemble import RandomForestClassifier
+
+# Train a Random Forest model
+rf = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=None, class_weight='balanced').fit(X_train, y_train)
+
+# %% Evaluate Random Forest Model
+# Predict class labels and probabilities
+y_pred_rf = pd.Series(rf.predict(X_test), name='rf')
+y_prob_rf = pd.Series(rf.predict_proba(X_test).max(axis=1), name='rf')
+
+# Add predictions to existing DataFrames
+y_pred = pd.concat([y_pred, y_pred_rf], axis=1)
+y_prob = pd.concat([y_prob, y_prob_rf], axis=1)
+
+# %% Metrics and Confusion Matrix for Random Forest
+# Calculate metrics
+precision_rf, recall_rf, fscore_rf, _ = score(y_test, y_pred_rf, average='weighted')
+accuracy_rf = accuracy_score(y_test, y_pred_rf)
+auc_rf = roc_auc_score(label_binarize(y_test, classes=[0,1,2,3,4,5]),
+                       label_binarize(y_pred_rf, classes=[0,1,2,3,4,5]),
+                       average='weighted')
+
+# Confusion matrix
+cm['rf'] = confusion_matrix(y_test, y_pred_rf)
+
+# Add Random Forest metrics to the DataFrame
+metrics['rf'] = pd.Series({'precision': precision_rf, 'recall': recall_rf,
+                           'fscore': fscore_rf, 'accuracy': accuracy_rf,
+                           'auc': auc_rf})
+
+# %% Plot Confusion Matrix for Random Forest
+fig, axList = plt.subplots(nrows=3, ncols=2)
+axList = axList.flatten()
+fig.set_size_inches(12, 12)
+
+# Add an empty subplot for layout alignment if needed
+axList[-1].axis('off')
+
+# Plot all confusion matrices, including Random Forest
+for ax, lab in zip(axList[:-1], coeff_labels + ['rf']):
+    sns.heatmap(cm[lab], ax=ax, annot=True, fmt='d')
+    ax.set(title=lab)
+
+plt.tight_layout()
