@@ -1,0 +1,12 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+code: . # Directory containing your code and scripts
+command: python HARSpy.py --trainData ${{inputs.trainData}}
+inputs:
+  trainData:
+    type: uri_file
+    path: azureml:azureml:trainData:1 # Replace with your dataset name and version
+environment: azureml://registries/azureml/environments/sklearn-1.5/versions/1
+#environment: azureml:HumanActivity-ENV:4  # Reference to the environment you created
+compute: Int-Engg-Compute-1 # Your compute cluster name
+experiment_name: jobExperiment1
+description: "Training job for Human Activity Model using train and test datasets"
