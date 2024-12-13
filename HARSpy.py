@@ -272,4 +272,5 @@ for ax, lab in zip(axList[:-1], coeff_labels + ['rf']):
     sns.heatmap(cm[lab], ax=ax, annot=True, fmt='d')
     ax.set(title=lab)
 
+
 plt.tight_layout()
