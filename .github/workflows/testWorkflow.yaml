@@ -72,4 +72,4 @@ jobs:
       # Step 13: Submit Human Activity ML Job to Azure
       - name: Submit  Job to Azure ML
         run: |
-          az ml job create --file "job.yaml" --resource-group test-resource --workspace-name test-workspace
+          az ml job create --file "job.yaml" --resource-group ms-proj-space-n-1 --workspace-name Ahmed-MS-Space_1
